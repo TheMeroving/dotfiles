@@ -1,0 +1,44 @@
+#!/bin/bash
+
+apps_list='/home/meroving/.apps_list'
+#
+# Controlla se fzf è installato
+if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf non è installato. Installalo per procedere."
+    exit 1
+fi
+
+# Leggi l'elenco delle applicazioni dal file e prepara le descrizioni per la visualizzazione
+app_list=$(awk -F, '{gsub(/^[ \t]+|[ \t]+$/, "", $1); print $1}' $apps_list)
+
+# Usa fzf per permettere all'utente di scegliere un'applicazione, mostrando solo le descrizioni
+selected_desc=$(echo "$app_list" | fzf --prompt="Seleziona un'applicazione: ")
+
+# Verifica se l'utente ha selezionato un'applicazione
+if [ -z "$selected_desc" ]; then
+    echo "Nessuna applicazione selezionata. Uscita."
+    exit 0
+fi
+
+# Trova il comando e il workspace corrispondenti alla descrizione selezionata usando awk
+selected_info=$(grep "$selected_desc" $apps_list)
+selected_command=$(echo "$selected_info" | awk -F, '{gsub(/^[ \t]+|[ \t]+$/, "", $2); print $2}')
+selected_workspace=$(echo "$selected_info" | awk -F, '{gsub(/^[ \t]+|[ \t]+$/, "", $3); print $3}')
+
+# Verifica se è stato effettivamente selezionato un comando
+if [ -z "$selected_command" ]; then
+    echo "Comando non trovato per l'applicazione selezionata. Uscita."
+    exit 1
+fi
+
+# Sposta l'i3wm al workspace desiderato e avvia l'applicazione in quel workspace
+i3-msg "workspace $selected_workspace" > /dev/null
+sleep 0.5
+$selected_command > /dev/null 2>&1 &
+
+echo "Avvio $selected_desc in workspace $selected_workspace..."
+
+
+
+
+

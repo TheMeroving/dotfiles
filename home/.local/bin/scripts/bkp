@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Carica il file di configurazione
+source ./bkp.config
+
+# Funzione per installare i pacchetti necessari
+install_dependencies() {
+    sudo pacman -Syu git yay --noconfirm
+}
+
+# Funzione per inizializzare il repository Git
+initialize_repo() {
+    if [ ! -d "$REPO_DIR" ]; then
+        git init "$REPO_DIR"
+        cd "$REPO_DIR"
+        git config user.name "$GIT_USER_NAME"
+        git config user.email "$GIT_USER_EMAIL"
+    else
+        cd "$REPO_DIR"
+        git pull
+    fi
+}
+
+# Funzione per copiare gli elementi di sistema nel repository
+backup_system_items() {
+    for item in "${SYSTEM_BACKUP_ITEMS[@]}"; do
+        if [ -e "$item" ]; then
+            dest="$REPO_DIR/system$(dirname "$item")"
+            mkdir -p "$dest"
+            sudo cp -r "$item" "$dest"
+        else
+            echo "Elemento $item non trovato, saltando..."
+        fi
+    done
+}
+
+# Funzione per copiare gli elementi nella home nel repository
+backup_home_items() {
+    for item in "${HOME_BACKUP_ITEMS[@]}"; do
+        if [ -e "$item" ]; then
+            dest="$REPO_DIR/home$(dirname "$item" | sed "s|$HOME||")"
+            mkdir -p "$dest"
+            cp -r "$item" "$dest"
+        else
+            echo "Elemento $item non trovato, saltando..."
+        fi
+    done
+}
+#
+# Funzione per salvare la lista dei pacchetti installati
+backup_packages() {
+    yay -Qqe > "$REPO_DIR/packages.txt"
+}
+
+# Funzione per eseguire il commit e push delle modifiche
+commit_and_push() {
+    cd "$REPO_DIR"
+    git add .
+    git commit -m "Backup aggiornato $(date)"
+    git push
+}
+
+# Main
+install_dependencies
+initialize_repo
+backup_system_items
+backup_home_items
+backup_packages
+commit_and_push
+
+echo "Backup completato con successo!"
+

@@ -1,0 +1,7 @@
+#/bin/bash
+
+qemu-system-x86_64 -enable-kvm -cpu host -smp 4 -m 8096 \
+-drive file=/home/meroving/macchine-virtuali/windows.qcow2,if=virtio,format=qcow2,index=0 \
+-boot order=dc \
+-device virtio-net,netdev=net0 -netdev user,id=net0 \
+-nic user,id=nic0,smb=/home/meroving

@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Carica il file di configurazione
+source ./bkp.sh
+
+# Funzione per installare i pacchetti necessari
+install_dependencies() {
+    sudo pacman -Syu git yay --noconfirm
+}
+
+# Funzione per clonare o aggiornare il repository Git
+update_repo() {
+    if [ ! -d "$REPO_DIR" ]; then
+        git clone your_repo_url "$REPO_DIR"
+    else
+        cd "$REPO_DIR"
+        git pull
+    fi
+}
+
+# Funzione per ripristinare gli elementi di sistema dal repository
+restore_system_items() {
+    for item in "${SYSTEM_BACKUP_ITEMS[@]}"; do
+        item_name=$(basename "$item")
+        if [ -e "$REPO_DIR/$item_name" ]; then
+            sudo cp -r "$REPO_DIR/$item_name" "$item"
+        else
+            echo "Elemento $item_name non trovato nel backup, saltando..."
+        fi
+    done
+}
+
+# Funzione per ripristinare gli elementi nella home dal repository
+restore_home_items() {
+    for item in "${HOME_BACKUP_ITEMS[@]}"; do
+        item_name=$(basename "$item")
+        if [ -e "$REPO_DIR/$item_name" ]; then
+            cp -r "$REPO_DIR/$item_name" "$item"
+        else
+            echo "Elemento $item_name non trovato nel backup, saltando..."
+        fi
+    done
+}
+
+# Funzione per reinstallare i pacchetti
+restore_packages() {
+    if [ -f "$REPO_DIR/packages.txt" ]; then
+        yay -S --needed - < "$REPO_DIR/packages.txt"
+    else
+        echo "File packages.txt non trovato nel backup, saltando il ripristino dei pacchetti..."
+    fi
+}
+
+# Main
+install_dependencies
+update_repo
+
+# Esegui il ripristino degli elementi di sistema con sudo
+sudo bash -c "$(declare -f restore_system_items); restore_system_items"
+
+# Esegui il ripristino degli elementi nella home senza sudo
+restore_home_items
+restore_packages
+
+echo "Ripristino completato con successo!"
+

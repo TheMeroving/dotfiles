@@ -1,0 +1,5 @@
+#! /bin/bash
+
+DEV=$(lsblk -nro HOTPLUG,TYPE,PATH,LABEL,FSTYPE,MOUNTPOINT | awk '$1 == 1 && $2 == "part" && $5 && !$6 {printf "%-20s %s\n",$3,$4}' | fzf -0 --layout=reverse --height=~40% | awk '{print $1}')
+
+[ -n "$DEV" ] && udisksctl mount -b $DEV
