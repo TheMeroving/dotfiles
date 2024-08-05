@@ -57,7 +57,7 @@ restore_home_items() {
 # Funzione per reinstallare i pacchetti
 restore_packages() {
     if [ -f "$REPO_DIR/packages.txt" ]; then
-        yay -S --needed - < "$REPO_DIR/packages.txt"
+        yay -S --noconfirm --needed - < "$REPO_DIR/packages.txt"
     else
         echo "File packages.txt non trovato nel backup, saltando il ripristino dei pacchetti..."
     fi
