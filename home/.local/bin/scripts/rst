@@ -5,9 +5,19 @@ source ./bkp.sh
 
 # Funzione per installare i pacchetti necessari
 install_dependencies() {
-    sudo pacman -Syu git yay --noconfirm
+    sudo pacman -Syu git --noconfirm
+    
+    # Installazione di yay da AUR
+    if ! command -v yay &> /dev/null; then
+        tmp_dir=$(mktemp -d)
+        git clone https://aur.archlinux.org/yay.git "$tmp_dir/yay"
+        cd "$tmp_dir/yay"
+        makepkg -si --noconfirm
+        cd -
+        rm -rf "$tmp_dir"
+    fi
 }
-
+#
 # Funzione per clonare o aggiornare il repository Git
 update_repo() {
     if [ ! -d "$REPO_DIR" ]; then
@@ -21,9 +31,10 @@ update_repo() {
 # Funzione per ripristinare gli elementi di sistema dal repository
 restore_system_items() {
     for item in "${SYSTEM_BACKUP_ITEMS[@]}"; do
+        relative_path="system$(dirname "$item")"
         item_name=$(basename "$item")
-        if [ -e "$REPO_DIR/$item_name" ]; then
-            sudo cp -r "$REPO_DIR/$item_name" "$item"
+        if [ -e "$REPO_DIR/$relative_path/$item_name" ]; then
+            sudo cp -r "$REPO_DIR/$relative_path/$item_name" "$item"
         else
             echo "Elemento $item_name non trovato nel backup, saltando..."
         fi
@@ -33,9 +44,10 @@ restore_system_items() {
 # Funzione per ripristinare gli elementi nella home dal repository
 restore_home_items() {
     for item in "${HOME_BACKUP_ITEMS[@]}"; do
+        relative_path="home$(dirname "$item" | sed "s|$HOME||")"
         item_name=$(basename "$item")
-        if [ -e "$REPO_DIR/$item_name" ]; then
-            cp -r "$REPO_DIR/$item_name" "$item"
+        if [ -e "$REPO_DIR/$relative_path/$item_name" ]; then
+            cp -r "$REPO_DIR/$relative_path/$item_name" "$item"
         else
             echo "Elemento $item_name non trovato nel backup, saltando..."
         fi
@@ -55,12 +67,13 @@ restore_packages() {
 install_dependencies
 update_repo
 
+restore_packages
+
 # Esegui il ripristino degli elementi di sistema con sudo
 sudo bash -c "$(declare -f restore_system_items); restore_system_items"
 
 # Esegui il ripristino degli elementi nella home senza sudo
 restore_home_items
-restore_packages
 
 echo "Ripristino completato con successo!"
 
