@@ -8,8 +8,19 @@ source "$SCRIPT_DIR/bkp.config"
 
 # Funzione per installare i pacchetti necessari
 install_dependencies() {
-    sudo pacman -Syu git yay --noconfirm
+    sudo pacman -Syu git --noconfirm
+    
+    # Installazione di yay da AUR
+    if ! command -v yay &> /dev/null; then
+        tmp_dir=$(mktemp -d)
+        git clone https://aur.archlinux.org/yay.git "$tmp_dir/yay"
+        cd "$tmp_dir/yay"
+        makepkg -si --noconfirm
+        cd -
+        rm -rf "$tmp_dir"
+    fi
 }
+#
 
 # Funzione per inizializzare il repository Git
 initialize_repo() {

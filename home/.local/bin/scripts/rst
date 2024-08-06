@@ -20,16 +20,6 @@ install_dependencies() {
         rm -rf "$tmp_dir"
     fi
 }
-#
-# Funzione per clonare o aggiornare il repository Git
-update_repo() {
-    if [ ! -d "$REPO_DIR" ]; then
-        git clone your_repo_url "$REPO_DIR"
-    else
-        cd "$REPO_DIR"
-        git pull
-    fi
-}
 
 # Funzione per ripristinare gli elementi di sistema dal repository
 restore_system_items() {
@@ -68,7 +58,6 @@ restore_packages() {
 
 # Main
 install_dependencies
-update_repo
 
 restore_packages
 
