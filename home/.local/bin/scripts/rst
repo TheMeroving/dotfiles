@@ -26,7 +26,9 @@ restore_system_items() {
     for item in "${SYSTEM_BACKUP_ITEMS[@]}"; do
         relative_path="system$(dirname "$item")"
         item_name=$(basename "$item")
+        dest_dir=$(dirname "$item")
         if [ -e "$REPO_DIR/$relative_path/$item_name" ]; then
+            sudo mkdir -p "$dest_dir"
             sudo cp -r "$REPO_DIR/$relative_path/$item_name" "$item"
         else
             echo "Elemento $item_name non trovato nel backup, saltando..."
@@ -39,14 +41,15 @@ restore_home_items() {
     for item in "${HOME_BACKUP_ITEMS[@]}"; do
         relative_path="home$(dirname "$item" | sed "s|$HOME||")"
         item_name=$(basename "$item")
+        dest_dir=$(dirname "$item")
         if [ -e "$REPO_DIR/$relative_path/$item_name" ]; then
+            mkdir -p "$dest_dir"
             cp -r "$REPO_DIR/$relative_path/$item_name" "$item"
         else
             echo "Elemento $item_name non trovato nel backup, saltando..."
         fi
     done
 }
-
 # Funzione per reinstallare i pacchetti
 restore_packages() {
     if [ -f "$REPO_DIR/packages.txt" ]; then
