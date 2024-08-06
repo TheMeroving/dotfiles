@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Carica il file di configurazione
-source $HOME/.local/bin/scripts/bkp.config
+# Ottieni la directory dello script chiamante
+SCRIPT_DIR=$(dirname "$(realpath "$BASH_SOURCE")")
+
+# Carica il file di configurazione dalla stessa directory dello script
+source "$SCRIPT_DIR/bkp.config"
 
 # Funzione per installare i pacchetti necessari
 install_dependencies() {
