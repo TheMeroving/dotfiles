@@ -65,7 +65,7 @@ install_dependencies
 restore_packages
 
 # Esegui il ripristino degli elementi di sistema con sudo
-sudo bash -c "$(declare -f restore_system_items); restore_system_items"
+restore_system_items
 
 # Esegui il ripristino degli elementi nella home senza sudo
 restore_home_items

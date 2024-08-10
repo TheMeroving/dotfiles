@@ -1,0 +1,2 @@
+SUBSYSTEM=="drm", ACTION=="change", RUN+="/home/meroving/.local/bin/scripts/connect_monitor"
+

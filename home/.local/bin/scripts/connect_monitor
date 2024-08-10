@@ -1,0 +1,23 @@
+#!/bin/bash
+
+export DISPLAY=:0
+export XAUTHORITY=/home/meroving/.Xauthority
+
+PRIMARY_MONITOR=$(xrandr --query | grep " connected primary" | cut -d ' ' -f1)
+NEW_MONITOR=$(xrandr --query | grep " connected" | grep -v "primary" | cut -d ' ' -f1)
+
+if [ ! -z "$NEW_MONITOR" ]; then
+    # Cattura la risoluzione del monitor interno
+    RESOLUTION=$(xrandr --query | grep "$PRIMARY_MONITOR connected" | grep -oP "\d+x\d+")
+
+    # Imposta la risoluzione del monitor esterno
+    xrandr --output $NEW_MONITOR --mode $RESOLUTION --same-as $PRIMARY_MONITOR
+
+    # Disabilita il monitor interno
+    xrandr --output $PRIMARY_MONITOR --off
+else
+    xrandr --output $PRIMARY_MONITOR --auto
+fi
+
+
+

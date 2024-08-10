@@ -5,6 +5,7 @@ base
 base-devel
 bat
 bottom
+brightnessctl
 drawio-desktop
 dunst
 efibootmgr
@@ -32,6 +33,7 @@ lightdm-mini-greeter
 linux
 linux-firmware
 lldb
+lshw
 man-db
 mesa-utils
 mpv
