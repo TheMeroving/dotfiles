@@ -35,7 +35,6 @@ linux-firmware
 lldb
 lshw
 man-db
-mesa-utils
 mpv
 nano
 neofetch
@@ -72,7 +71,6 @@ ttf-google-fonts-git
 ttf-jetbrains-mono
 ttf-nerd-fonts-symbols
 udisks2
-unzip
 virt-manager
 vulkan-intel
 vulkan-tools
@@ -80,7 +78,6 @@ wireframesketcher
 wireplumber
 xdotool
 xorg-server
-xorg-xrandr
 yay
 yay-debug
 zathura

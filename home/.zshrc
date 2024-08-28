@@ -99,4 +99,5 @@ alias ls="exa --icons -h"
 if ! [ -f /run/user/$UID/runonce_myscript ]; then
     touch /run/user/$UID/runonce_myscript
     neofetch
+    automute
 fi
