@@ -5,7 +5,7 @@ return {
 		local lint = require("lint")
 
 		lint.linters.eslint_d.args = {
-			-- "--no-warn-ignored", -- <-- this is the key argument
+			"--no-warn-ignored", -- <-- this is the key argument
 			"--format",
 			"json",
 			"--stdin",

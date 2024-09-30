@@ -95,6 +95,7 @@ export TERMINAL=kitty
 export PATH="$HOME/.local/bin/scripts:$PATH"
 
 alias ls="exa --icons -h"
+alias vim="nvim"
 
 if ! [ -f /run/user/$UID/runonce_myscript ]; then
     touch /run/user/$UID/runonce_myscript

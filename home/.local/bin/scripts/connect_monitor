@@ -14,7 +14,7 @@ if [ ! -z "$NEW_MONITOR" ]; then
     xrandr --output $NEW_MONITOR --mode $RESOLUTION --same-as $PRIMARY_MONITOR
 
     # Disabilita il monitor interno
-    xrandr --output $PRIMARY_MONITOR --off
+#    xrandr --output $PRIMARY_MONITOR --off
 else
     xrandr --output $PRIMARY_MONITOR --auto
 fi
