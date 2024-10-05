@@ -12,6 +12,8 @@ opt.autoindent = true -- copy indent from current line when starting new one
 opt.hlsearch = false
 opt.signcolumn = "yes"
 opt.mouse = ""
+opt.clipboard = "unnamedplus"
+
 vim.diagnostic.config({
 	float = { border = "rounded" },
 })
